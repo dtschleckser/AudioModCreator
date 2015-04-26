@@ -80,15 +80,38 @@ public class AudioGui extends JFrame {
 
 		});
 
-		JPanel compilePanel = new JPanel(new FlowLayout());
+		JPanel compilePanel = new JPanel();
 		compilePanel.setLayout(new BoxLayout(compilePanel, BoxLayout.Y_AXIS));
-		JButton compileButton = new JButton("Compile");
+		
+		JPanel ZIPPanel = new JPanel();
+		ZIPPanel.setLayout(new BoxLayout(ZIPPanel, BoxLayout.X_AXIS));
 		JLabel compZipLabel = new JLabel("Create a ZIP file? ");
+		ZIPPanel.add(compZipLabel);
 		JCheckBox compZipOut = new JCheckBox();
+		ZIPPanel.add(compZipOut);
+		//space out the entire panel
+		ZIPPanel.add(new JLabel("                                                          "));
+		
+		JPanel namePanel = new JPanel();
+		namePanel.setLayout(new BoxLayout(namePanel, BoxLayout.X_AXIS));
+		JLabel modName = new JLabel("Mod name: ");
+		namePanel.add(modName);
 		JTextField compName = new JTextField();
-		JLabel customDotaPath = new JLabel("If you have a custom path for your DOTA installation, put it here: ");
+		compName.setMaximumSize(new Dimension(750,20));
+		compName.setMinimumSize(new Dimension(600,20));
+		namePanel.add(compName);
+		
+		JPanel pathPanel = new JPanel();
+		pathPanel.setLayout(new BoxLayout(pathPanel, BoxLayout.X_AXIS));
+		JLabel customDotaPath = new JLabel("DOTA path: ");
+		pathPanel.add(customDotaPath);
 		JTextField customPath = new JTextField();
-
+		customPath.setMaximumSize(new Dimension(750,20));
+		customPath.setMinimumSize(new Dimension(600,20));
+		pathPanel.add(customPath);
+		
+		JButton compileButton = new JButton("Compile");
+		
 		compileButton.addActionListener(new ActionListener() {
 
 			@Override
@@ -106,10 +129,11 @@ public class AudioGui extends JFrame {
 							File modsFile = new File("\\mods\\");
 							if(!(modsFile.exists()))
 								modsFile.mkdir();
-							String from = ((String)newFile);//.replace("\\", "/");
-							String to = (System.getProperty("user.dir")+"\\mods"+compName.getText()+"\\"+filePath+""+fileName);//.replace("\\", "/");
+							
+							String from = ((String)newFile);
+							String to = (System.getProperty("user.dir")+"\\mods"+compName.getText()+"\\"+filePath+""+fileName);
 							String toPath = System.getProperty("user.dir")+"\\mods"+compName.getText()+"\\"+filePath;
-							//new File(System.getProperty("user.dir")+"\\mods"+compName.getText()+"\\"+filePath).mkdir();
+			
 							System.out.println(toPath);
 							File toFile = new File(toPath);
 							toFile.mkdirs();
@@ -128,10 +152,10 @@ public class AudioGui extends JFrame {
 			}
 		});
 
-		compilePanel.add(compZipLabel);
-		compilePanel.add(compZipOut);
+		compilePanel.add(ZIPPanel);
+		compilePanel.add(namePanel);
+		compilePanel.add(pathPanel);
 		compilePanel.add(compileButton);
-		compilePanel.add(compName);
 		searchPanel.add(jtf);
 		searchPanel.add(sb);
 		tablePanel.add(st);
