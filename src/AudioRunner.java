@@ -5,6 +5,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 public class AudioRunner {
 	public static void main(String[]args)
 	{
+		Configuration.loadConfig();
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (ClassNotFoundException | InstantiationException

@@ -15,6 +15,7 @@ public class SoundTable extends JPanel {
 	private JTable table;
 	private JScrollPane jsp;
 	private String[] columnNames = new String[2];
+	private ArrayList<String> strData;
 	public SoundTable()
 	{
 		super(new GridLayout(1, 0));
@@ -47,26 +48,24 @@ public class SoundTable extends JPanel {
 	}
 	public Object[][] getDataMatches(String filter)
 	{
-		ArrayList<String> strData = new ArrayList<String>();
-			try {
-				FileInputStream input = new FileInputStream(new File("dota-sound-list.txt"));
-				BufferedInputStream bis = new BufferedInputStream(input);
-				Scanner sc = new Scanner(bis);
-				while(sc.hasNext())
-				{
-					String s = sc.nextLine();
-					if(s.contains(filter))
-						strData.add(s);
-				}
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			}
-		Object[][] data = new Object[strData.size()][columnNames.length];
-
+		if(strData == null)
+			strData = FileList.retrieveSoundData();
+		
+		ArrayList<String> filteredList = new ArrayList<String>();
 		for(int i = 0; i < strData.size(); i++)
 		{
+			String str = strData.get(i);
+			if(strData.get(i).contains(filter))
+			{
+				System.out.println(strData.get(i) + " contains " + filter);
+				filteredList.add(str);
+			}
+		}
+		Object[][] data = new Object[filteredList.size()][columnNames.length];
+		for(int i = 0; i < filteredList.size(); i++)
+		{
 			//split data into filenames & filepaths
-			String rawFile = strData.get(i);
+			String rawFile = filteredList.get(i);
 			String fileName = rawFile.substring(rawFile.lastIndexOf('\\')+1);
 			String filePath = rawFile.substring(0, rawFile.lastIndexOf('\\')+1);
 			data[i][1] = fileName;
