@@ -20,6 +20,7 @@ import javax.swing.JOptionPane;
 public class FileList {
 	public static ArrayList<String> retrieveSoundData()
 	{
+		System.out.println("Current time: " + Long.toString(System.currentTimeMillis()/1000L));
 		JFrame notificationPane = new JFrame();
 		notificationPane.setLayout(new FlowLayout());
 		notificationPane.add(new JLabel("Updating sound files - Please wait."));
@@ -44,13 +45,21 @@ public class FileList {
 			rd.close();
 			//We're up to date - set the most recent update to current time
 			//and get the dota-sound-list and return it.
-			if(response.get(0).equals("OK"))
+			if(response.get(0).equals("Ok"))
 			{
 				response = new ArrayList<String>();
 				Configuration.setValue("lastUpdate", Long.toString(System.currentTimeMillis()/1000L));
+				if(new File("dota-sound-list.txt").exists())
+				{
 				Scanner s = new Scanner(new File("dota-sound-list.txt"));
 				while(s.hasNextLine())
 					response.add(s.nextLine());
+				}
+				else
+				{
+					Configuration.setValue("lastUpdate", Long.toString(0L));
+					FileList.retrieveSoundData();
+				}
 			}
 			//Store the new file if it's not updated
 			else
@@ -60,11 +69,16 @@ public class FileList {
 					FileOutputStream fos = new FileOutputStream(new File("dota-sound-list.txt"));
 					BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
 					for(String s : response)
+					{
 						bw.write(s);
+						bw.write("\r");
+					}
 					bw.close();
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
+				if(Configuration.getValue("lastUpdate").equals(Long.toString(0L)))
+					Configuration.setValue("lastUpdate", Long.toString(System.currentTimeMillis()/1000L));
 			}
 		} catch (java.net.SocketTimeoutException e) {
 			JOptionPane.showMessageDialog(null, "Couldn't connect to server.");
