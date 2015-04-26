@@ -1,9 +1,12 @@
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 
@@ -14,6 +17,15 @@ public class FileList {
 		String result = retrieveSoundData();
 		if(!(result.equals(""))) //If blank text is gotten from the server it means you're up to date
 			Configuration.setValue("lastUpdate", Long.toString(System.currentTimeMillis()/1000L));
+		else
+			try {
+				FileOutputStream fos = new FileOutputStream(new File("dota-sound-list.txt"));
+				BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
+				bw.write(result);
+				bw.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 	}
 	//This method is a ~2.2MB download 
 	//so only use when it's necessary (update detected, etc) 
@@ -21,59 +33,26 @@ public class FileList {
 	{
 		String response = "";
 		URL oUrl = null;
-		//It's the user's first time running, so let's
-		//fetch the most recent audio files
-		if(Configuration.getValue("lastUpdate") == null)
+
+		try 
 		{
-			try 
-			{
-				oUrl = new URL("http://oxivod.me/get-sound-files.php?prevUpdate=0");
+			if(Configuration.getValue("lastUpdate") == null)
 				Configuration.setValue("lastUpdate", Long.toString(System.currentTimeMillis()/1000L));
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			}
-			try 
+			oUrl = new URL("http://oxivod.me/get-sound-files.php?prevUpdate="+Configuration.getValue("lastUpdate"));
+			HttpURLConnection servCon = (HttpURLConnection) oUrl.openConnection();
+			InputStream is = servCon.getInputStream();
+			BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+			String line;
+			while((line = rd.readLine()) != null) 
 			{
-				HttpURLConnection servCon = (HttpURLConnection) oUrl.openConnection();
-				InputStream is = servCon.getInputStream();
-				BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-				String line;
-				while((line = rd.readLine()) != null) 
-				{
-					response += line;
-					response += '\r';
-				}
-				rd.close();
-			} catch (IOException e) {
-				e.printStackTrace();
+				response += line;
+				response += '\r';
 			}
-			return response;
+			rd.close();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-		else 
-		{
-			try 
-			{
-				oUrl = new URL("http://oxivod.me/get-sound-files.php?prevUpdate="+Configuration.getValue("lastUpdate"));
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			}
-			try 
-			{
-				HttpURLConnection servCon = (HttpURLConnection) oUrl.openConnection();
-				InputStream is = servCon.getInputStream();
-				BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-				String line;
-				while((line = rd.readLine()) != null) 
-				{
-					System.out.println(response);
-					response += line;
-					response += '\r';
-				}
-				rd.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}	
-			return response;
-		}
+		System.out.println(response);
+		return response;
 	}
 }

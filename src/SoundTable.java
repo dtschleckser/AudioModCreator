@@ -1,19 +1,15 @@
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.awt.event.MouseAdapter;
 import java.io.BufferedInputStream;
-import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.table.TableModel;
 
 public class SoundTable extends JPanel {
 	private JTable table;
@@ -52,28 +48,19 @@ public class SoundTable extends JPanel {
 	public Object[][] getDataMatches(String filter)
 	{
 		ArrayList<String> strData = new ArrayList<String>();
-		String[] fileList = {"dota-sound-list.txt","vo-sound-list.txt"};
-		int results = 0;
-		for(String file : fileList)
-		{
 			try {
-				FileInputStream input = new FileInputStream(file);
+				FileInputStream input = new FileInputStream(new File("dota-sound-list.txt"));
 				BufferedInputStream bis = new BufferedInputStream(input);
 				Scanner sc = new Scanner(bis);
 				while(sc.hasNext())
 				{
 					String s = sc.nextLine();
 					if(s.contains(filter))
-					{
-						results++;
 						strData.add(s);
-					}
 				}
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			}
-		}
-		System.out.println(results + " results found.");
 		Object[][] data = new Object[strData.size()][columnNames.length];
 
 		for(int i = 0; i < strData.size(); i++)
