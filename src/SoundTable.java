@@ -49,17 +49,14 @@ public class SoundTable extends JPanel {
 	public Object[][] getDataMatches(String filter)
 	{
 		if(strData == null)
-			strData = FileList.retrieveSoundData();
+			strData = FileList.retrieveSoundData(true);
 		
 		ArrayList<String> filteredList = new ArrayList<String>();
 		for(int i = 0; i < strData.size(); i++)
 		{
 			String str = strData.get(i);
 			if(strData.get(i).contains(filter))
-			{
-				System.out.println(strData.get(i) + " contains " + filter);
 				filteredList.add(str);
-			}
 		}
 		Object[][] data = new Object[filteredList.size()][columnNames.length];
 		for(int i = 0; i < filteredList.size(); i++)

@@ -17,6 +17,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.UIManager;
 import javax.swing.table.TableModel;
 
 
@@ -38,12 +39,16 @@ public class AudioGui extends JFrame {
 		stm = st.getTable().getModel();
 		CustomTable ct = new CustomTable(stm.getRowCount(), stm.getColumnCount()+1);
 		ct.setPreferredSize(new Dimension(700, (int) ct.getSize().getHeight()));
-		JButton jb = new JButton("->");
+		
+		JPanel buttonPanel = new JPanel();
+		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
+		JButton addButton = new JButton("->");
+		buttonPanel.add(addButton);
 		/*
 		 * Transfer the selected values from 
 		 * the SoundTable to the CustomTable.
 		 */
-		jb.addActionListener(new ActionListener() {
+		addButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				int row = st.getTable().getSelectedRow();
@@ -55,7 +60,26 @@ public class AudioGui extends JFrame {
 				}
 			}
 		});
+		JButton removeButton = new JButton("<-");
+		buttonPanel.add(removeButton);
+		/*
+		 * Remove the selected values from the CustomTable
+		 * and move all the values after it up.
+		 */
+		removeButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int row = ct.getTable().getSelectedRow();
+				int rowCount = ct.getTable().getSelectedRowCount();
+				for(int i = row; i < (row + rowCount); i++)
+				{
+					ct.getTable().getModel().setValueAt(null, i, 0);
+					ct.getTable().getModel().setValueAt(null, i, 1);
+				}
+			}
+		});
 
+		
 		/*
 		 * Create the panel for searching
 		 * and add its elements
@@ -139,8 +163,8 @@ public class AudioGui extends JFrame {
 							}
 							else
 							{
-								to = (System.getProperty("user.dir")+"\\mods"+compName.getText()+"\\"+filePath+""+fileName);
-								toPath = System.getProperty("user.dir")+"\\mods"+compName.getText()+"\\"+filePath;
+								to = (System.getProperty("user.dir")+"\\mods\\"+compName.getText()+"\\"+filePath+""+fileName);
+								toPath = System.getProperty("user.dir")+"\\mods\\"+compName.getText()+"\\"+filePath;
 							}
 			
 							System.out.println(toPath);
@@ -167,7 +191,7 @@ public class AudioGui extends JFrame {
 		searchPanel.add(jtf);
 		searchPanel.add(sb);
 		tablePanel.add(st);
-		tablePanel.add(jb);
+		tablePanel.add(buttonPanel);
 		tablePanel.add(ct);
 
 		/*

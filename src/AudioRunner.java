@@ -15,6 +15,7 @@ public class AudioRunner {
 		//Update the local files for sound lists
 		//FileList.updateData();
 		AudioGui ag = new AudioGui();
+		ag.setTitle("DOTA 2 Audio Mod Creator");
 		ag.setSize(1200,800);
 		ag.setVisible(true);
 	}
