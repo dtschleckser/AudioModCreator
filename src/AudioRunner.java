@@ -9,9 +9,10 @@ public class AudioRunner {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (ClassNotFoundException | InstantiationException
 				| IllegalAccessException | UnsupportedLookAndFeelException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		//Update the local files for sound lists
+		//FileList.updateData();
 		AudioGui ag = new AudioGui();
 		ag.setSize(1200,800);
 		ag.setVisible(true);

@@ -9,16 +9,19 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import javax.swing.JOptionPane;
+
 
 public class FileList {
-	public static void main(String[]args)
+	public static void updateData()
 	{
 		Configuration.loadConfig();
 		String result = retrieveSoundData();
 		if(!(result.equals(""))) //If blank text is gotten from the server it means you're up to date
 			Configuration.setValue("lastUpdate", Long.toString(System.currentTimeMillis()/1000L));
 		else
-			try {
+			try 
+			{
 				FileOutputStream fos = new FileOutputStream(new File("dota-sound-list.txt"));
 				BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
 				bw.write(result);
@@ -33,13 +36,13 @@ public class FileList {
 	{
 		String response = "";
 		URL oUrl = null;
-
 		try 
 		{
 			if(Configuration.getValue("lastUpdate") == null)
 				Configuration.setValue("lastUpdate", Long.toString(System.currentTimeMillis()/1000L));
 			oUrl = new URL("http://oxivod.me/get-sound-files.php?prevUpdate="+Configuration.getValue("lastUpdate"));
 			HttpURLConnection servCon = (HttpURLConnection) oUrl.openConnection();
+			servCon.setConnectTimeout(10000);
 			InputStream is = servCon.getInputStream();
 			BufferedReader rd = new BufferedReader(new InputStreamReader(is));
 			String line;
@@ -49,6 +52,8 @@ public class FileList {
 				response += '\r';
 			}
 			rd.close();
+		} catch (java.net.SocketTimeoutException e) {
+			JOptionPane.showMessageDialog(null, "Couldn't connect to server.");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
