@@ -115,15 +115,6 @@ public class AudioGui extends JFrame {
 		installPanel.add(autoInstallCheck);
 		installPanel.add(new JLabel("                                              "));
 
-		JPanel ZIPPanel = new JPanel();
-		ZIPPanel.setLayout(new BoxLayout(ZIPPanel, BoxLayout.X_AXIS));
-		JLabel compZipLabel = new JLabel("Create a ZIP file? ");
-		ZIPPanel.add(compZipLabel);
-		JCheckBox compZipOut = new JCheckBox();
-		ZIPPanel.add(compZipOut);
-		//space out the entire panel
-		ZIPPanel.add(new JLabel("                                      "));
-
 		JPanel namePanel = new JPanel();
 		namePanel.setLayout(new BoxLayout(namePanel, BoxLayout.X_AXIS));
 		JLabel modName = new JLabel("Mod name: ");
@@ -185,7 +176,6 @@ public class AudioGui extends JFrame {
 			}
 		});
 		compilePanel.add(installPanel);
-		compilePanel.add(ZIPPanel);
 		compilePanel.add(namePanel);
 		compilePanel.add(compileButton);
 		searchPanel.add(jtf);
